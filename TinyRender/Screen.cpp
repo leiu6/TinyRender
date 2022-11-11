@@ -82,6 +82,7 @@ Screen::~Screen()
 
 void Screen::Clear()
 {
+	// TODO: find a better solution for this
 	system("cls");
 
 	for (int i = 0; i < size; i++)
