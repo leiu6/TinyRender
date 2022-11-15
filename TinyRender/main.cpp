@@ -9,7 +9,7 @@ int main()
 {
 	float frame_rate = 1; // Hz
 
-	Screen screen = Screen(100, 60);
+	Screen screen = Screen(50, 30);
 
 	Wireframe cube = Wireframe(8, 12);
 

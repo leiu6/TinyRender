@@ -4,8 +4,8 @@
 #include "Wireframe.h"
 
 #include <cmath>
-#include <iostream>
 #include <string>
+#include <cstdio>
 
 #define LOG(str) std::cout << str << "\n";
 
@@ -63,6 +63,17 @@ void Screen::DrawLineBresenham(Coord start, Coord end, char fill)
 	}
 }
 
+char* Screen::GrabFrontBufferRow(unsigned int row) const
+{
+	char* buffer_row = new char[width];
+
+	for (int i = 0; i < width; i++) {
+		buffer_row[i] = fb[(int)(width * row + i)];
+	}
+
+	return buffer_row;
+}
+
 Screen::Screen(unsigned int width, unsigned int height)
 {
 	this->width = width;
@@ -70,6 +81,8 @@ Screen::Screen(unsigned int width, unsigned int height)
 	this->size = width * height;
 	this->default_fill = ' ';
 	this->focal_length = 2;
+
+	// Create the buffers
 	this->fb = new char[size];
 	this->bb = new char[size];
 }
@@ -107,6 +120,7 @@ void Screen::Write(Coord position, char pixel)
 
 void Screen::Show() const
 {
+	/*
 	for (int row = 0; row < height; row++) {
 		for (int col = 0; col < width; col++) {
 			std::cout << fb[(int)(width * row + col)];
@@ -114,6 +128,28 @@ void Screen::Show() const
 
 		std::cout << "\n";
 	}
+	*/
+
+	char* newline_buffer = new char[1];
+	newline_buffer[0] = '\n';
+
+	for (int row = 0; row < height; row++)
+	{
+		char* row_buffer = this->GrabFrontBufferRow(row);
+
+		// Now we write the row
+		std::fwrite(row_buffer, sizeof(char), (size_t)width, stdout);
+
+		// And add the newline
+		std::fwrite(newline_buffer, sizeof(char), 1, stdout);
+
+		// Free the row buffer
+		delete[] row_buffer;
+	}
+
+	std::fflush(stdout); // TODO: see if this is performant enough
+
+	delete[] newline_buffer;
 }
 
 void Screen::DrawWireframe(const Wireframe& wireframe)

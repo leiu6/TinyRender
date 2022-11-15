@@ -18,6 +18,7 @@ private:
 	Coord ProjectToScreen(Vector vector) const;
 	Coord FromNormalizedToScreen(Coord normalized) const;
 	void DrawLineBresenham(Coord start, Coord end, char fill);
+	char* GrabFrontBufferRow(unsigned int row) const;
 
 public:
 	Screen(unsigned int width, unsigned int height);
