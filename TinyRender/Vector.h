@@ -10,6 +10,7 @@ public:
 
 	Vector operator+(const Vector& input) const;
 	Vector operator-(const Vector& input) const;
+	bool operator==(const Vector& input) const;
 	Vector Rotate(Vector axis, float angle) const;
 	float Mag() const;
 	Vector Norm() const;

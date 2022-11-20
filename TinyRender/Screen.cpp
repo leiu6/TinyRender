@@ -6,6 +6,7 @@
 #include <cmath>
 #include <string>
 #include <cstdio>
+#include <iostream>
 
 #define LOG(str) std::cout << str << "\n";
 
@@ -154,18 +155,28 @@ void Screen::Show() const
 
 void Screen::DrawWireframe(const Wireframe& wireframe)
 {
+	unsigned int num_vertices = wireframe.GetVerticeAssignmentCount();
+	unsigned int num_edges = wireframe.GetEdgeAssignmentCount();
+	char fill = wireframe.GetDefaultFill();
+
 	// That way we only have to complete the projection calculations once
-	Coord* projected = new Coord[wireframe.num_vertices];
+	Coord* projected = new Coord[num_vertices];
 
-	for (int i = 0; i < wireframe.num_vertices; i++) {
-		projected[i] = ProjectToScreen(wireframe.vertices[i]);
-		projected[i] = FromNormalizedToScreen(projected[i]);
+	for (int i = 0; i < num_vertices; i++) {
+		Vector vertice = wireframe.GetVertice(i);
+		Coord normalized = ProjectToScreen(vertice);
+		projected[i] = FromNormalizedToScreen(normalized);
 
-		Write(projected[i], wireframe.default_fill);
+		Write(projected[i], fill);
 	}
 
-	for (int i = 0; i < wireframe.num_edges; i++)
-		DrawLineBresenham(projected[wireframe.edges[i].a], projected[wireframe.edges[i].b], wireframe.default_fill);
+	for (int i = 0; i < num_edges; i++)
+		DrawLineBresenham(
+			projected[wireframe.GetEdge(i).a],
+			projected[wireframe.GetEdge(i).b],
+			fill
+		);
+
 
 	delete[] projected;
 }

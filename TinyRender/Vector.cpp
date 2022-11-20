@@ -26,6 +26,14 @@ Vector Vector::operator-(const Vector& input) const
 	);
 }
 
+bool Vector::operator==(const Vector& input) const
+{
+	if ((x == input.x) && (y == input.y) && (z == input.z))
+		return true;
+	else
+		return false;
+}
+
 Vector Vector::Rotate(Vector axis, float angle) const
 {
 	float ux = axis.x;

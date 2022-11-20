@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "Vector.h"
 
 struct Line
@@ -14,25 +16,24 @@ struct Line
 class Wireframe
 {
 private:
-	unsigned int _vertices_assignment_count;
-	unsigned int _edges_assignment_count;
-
-public:
-	Vector* vertices;
-	Line* edges;
-	unsigned int num_vertices;
-	unsigned int num_edges;
+	std::vector<Vector> vertices;
+	std::vector<Line> edges;
 	char default_fill;
 
-	Wireframe(unsigned int num_vertices, unsigned int num_edges);
-	~Wireframe();
+public:
+	Wireframe();
 
-	void AddVertice(Vector vertice);
-	void AddEdge(unsigned int start_indice, unsigned int end_indice);
+	void AddVerticeSet(Vector start, Vector end);
 
 	void Show() const;
 
 	void Translate(Vector translation);
 	void Rotate(Vector origin, Vector axis, float angle);
+
+	unsigned int GetVerticeAssignmentCount() const { return vertices.size(); }
+	unsigned int GetEdgeAssignmentCount() const { return edges.size(); }
+	char GetDefaultFill() const { return default_fill; }
+	const Line& GetEdge(unsigned int i) const { return edges[i]; }
+	const Vector& GetVertice(unsigned int i) const { return vertices[i]; }
 };
 

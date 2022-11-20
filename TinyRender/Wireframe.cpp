@@ -2,55 +2,36 @@
 #include "Vector.h"
 
 #include <iostream>
+#include <vector>
 
-Wireframe::Wireframe(unsigned int num_vertices, unsigned int num_edges)
+Wireframe::Wireframe()
 {
-	_vertices_assignment_count = 0;
-	_edges_assignment_count = 0;
-
-	this->num_vertices = num_vertices;
-	this->num_edges = num_edges;
-	this->vertices = new Vector[num_vertices];
-	this->edges = new Line[num_edges];
-	this->default_fill = '@';
+	default_fill = '#';
 }
 
-Wireframe::~Wireframe()
+void Wireframe::AddVerticeSet(Vector start, Vector end)
 {
-	delete[] vertices;
-	delete[] edges;
-}
+	// Detect if items are in vertices
+	if (!std::count(vertices.begin(), vertices.end(), start))
+		vertices.push_back(start);
 
-void Wireframe::AddVertice(Vector vertice)
-{
-	// If we have already added the max number of vertices don't
-	// try to add another one.
-	if (_vertices_assignment_count >= num_vertices) return;
+	if (!std::count(vertices.begin(), vertices.end(), end))
+		vertices.push_back(end);
 
-	vertices[_vertices_assignment_count] = vertice;
-
-	_vertices_assignment_count++;
-}
-
-void Wireframe::AddEdge(unsigned int start_indice, unsigned int end_indice)
-{
-	if (_edges_assignment_count >= num_edges) return;
-
-	edges[_edges_assignment_count] = Line(start_indice, end_indice);
-
-	_edges_assignment_count++;
+	// Create the edge
+	int start_indice = std::find(vertices.begin(), vertices.end(), start) - vertices.begin();
+	int end_indice = std::find(vertices.begin(), vertices.end(), end) - vertices.begin();
+	edges.push_back(Line(start_indice, end_indice));
 }
 
 void Wireframe::Show() const
 {
 	std::cout << "Wireframe:\n";
-	std::cout << "Total allocated vertices: " << num_vertices << "\n";
-	std::cout << "Total added vertices: " << _vertices_assignment_count << "\n";
-	std::cout << "Total allocated edges: " << num_edges << "\n";
-	std::cout << "Total added edges: " << _edges_assignment_count << "\n";
+	std::cout << "Total added vertices: " << vertices.size() << "\n";
+	std::cout << "Total added edges: " << edges.size() << "\n";
 	std::cout << "\n";
 
-	for (int i = 0; i < num_vertices; i++) {
+	for (int i = 0; i < vertices.size(); i++) {
 		std::cout << "Vertice #" << i + 1 << ": ";
 		vertices[i].Show();
 	}
@@ -58,13 +39,13 @@ void Wireframe::Show() const
 
 void Wireframe::Translate(Vector translation)
 {
-	for (int i = 0; i < num_vertices; i++)
+	for (int i = 0; i < vertices.size(); i++)
 		vertices[i] = vertices[i] + translation;
 }
 
 void Wireframe::Rotate(Vector origin, Vector axis, float angle)
 {
-	for (int i = 0; i < num_vertices; i++) {
+	for (int i = 0; i < vertices.size(); i++) {
 		// Move vertice to origin
 		vertices[i] = vertices[i] - origin;
 
@@ -75,3 +56,6 @@ void Wireframe::Rotate(Vector origin, Vector axis, float angle)
 		vertices[i] = vertices[i] + origin;
 	}
 }
+
+
+/* PRIVATE */
